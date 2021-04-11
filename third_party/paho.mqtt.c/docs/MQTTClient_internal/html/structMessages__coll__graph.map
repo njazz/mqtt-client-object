@@ -1,0 +1,7 @@
+<map id="Messages" name="Messages">
+<area shape="rect" id="node1" title="Client publication message data." alt="" coords="48,279,130,304"/>
+<area shape="rect" id="node2" href="$structPublications.html" title="Stored publication data to minimize copying." alt="" coords="5,192,99,217"/>
+<area shape="rect" id="node3" href="$structMQTTProperties.html" title="MQTT version 5 property list." alt="" coords="123,192,243,217"/>
+<area shape="rect" id="node4" href="$structMQTTProperty.html" title="Structure to hold an MQTT version 5 property of any type." alt="" coords="128,105,237,131"/>
+<area shape="rect" id="node5" href="$structMQTTLenString.html" title="The data for a length delimited string." alt="" coords="125,5,241,31"/>
+</map>

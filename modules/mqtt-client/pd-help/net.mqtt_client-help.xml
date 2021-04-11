@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pddoc version="1.0">
+    <object name="net.mqtt_client">
+        <title>net.mqtt_client</title>
+        <meta>
+            <authors>
+                <author> Alex Nadzharov </author>
+            </authors>
+            <description>MQTT client</description>
+            <license> % </license>
+            <library> ceammc </library>
+            <category> net </category>
+            <keywords> MQTT </keywords>
+            <since> 0.x </since>
+        </meta>
+        <info>
+            <par> MQTT client that uses async Eclipse PAHO library </par>
+        </info>
+        <arguments>
+            <argument name="ARG_NAME" type="symbol">argument name</argument>
+        </arguments>
+        <properties>
+            <property name="@property_name" type="symbol">property name</property>
+        </properties>
+        <inlets>
+            <inlet>
+                <xinfo on="bang">detailed description</xinfo>
+            </inlet>
+        </inlets>
+        <outlets>
+            <outlet>description</outlet>
+        </outlets>
+        <mouse>
+            <!-- <event type="left-click" edit_mode="0" keys="Shift+Ctrl">Some info</event> -->
+        </mouse>
+        <example>
+            <pdascii>
+<![CDATA[
+
+[connect( [subscribe( [unsubscribe(                                 
+|//
+[net.mqtt_client]
+
+]]>
+            </pdascii>
+        </example>
+    </object>
+</pddoc>

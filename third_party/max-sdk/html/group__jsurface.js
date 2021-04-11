@@ -1,0 +1,25 @@
+var group__jsurface =
+[
+    [ "t_jsurface", "group__jsurface.html#ga9ced037ee8d6676fcd561e1d3420c28b", null ],
+    [ "jgraphics_create", "group__jsurface.html#ga7748ae17fe303820fe7b0afcca104c45", null ],
+    [ "jgraphics_get_resource_data", "group__jsurface.html#gacdc136f6f6a54c8a8a825ba5cb708683", null ],
+    [ "jgraphics_image_surface_clear", "group__jsurface.html#gafb21797debfc51d220bc448ec2420687", null ],
+    [ "jgraphics_image_surface_create", "group__jsurface.html#gaee5d0e140bdbece63abd62d60f44f96d", null ],
+    [ "jgraphics_image_surface_create_for_data", "group__jsurface.html#ga315abd7050ef53566df8fbcec80182af", null ],
+    [ "jgraphics_image_surface_create_from_file", "group__jsurface.html#ga5b9a625daaa6d39d5fe538b714ae1c6f", null ],
+    [ "jgraphics_image_surface_create_from_filedata", "group__jsurface.html#ga47be6691ef1b94e86e7783e7ce38ebe9", null ],
+    [ "jgraphics_image_surface_create_from_resource", "group__jsurface.html#gabb5d09a9d36912e1685bad2799992117", null ],
+    [ "jgraphics_image_surface_create_referenced", "group__jsurface.html#ga0aadea6674e22465d5d81148c8675d61", null ],
+    [ "jgraphics_image_surface_draw", "group__jsurface.html#gab6b97ae8202c210ccec29ec2b8c4f5d0", null ],
+    [ "jgraphics_image_surface_draw_fast", "group__jsurface.html#ga766ec5ca1b93fa9b0f3b05c49122f62c", null ],
+    [ "jgraphics_image_surface_get_height", "group__jsurface.html#ga5eac45fcd4dd046cb330ddea899cdca5", null ],
+    [ "jgraphics_image_surface_get_pixel", "group__jsurface.html#gad4ad8d34eb21640502f64e727d894cf4", null ],
+    [ "jgraphics_image_surface_get_width", "group__jsurface.html#ga28bdb47bb4dd73c793574e941eb23d13", null ],
+    [ "jgraphics_image_surface_scroll", "group__jsurface.html#ga488683dd70cacdedfc6018dd3c78adc7", null ],
+    [ "jgraphics_image_surface_set_pixel", "group__jsurface.html#ga5f3bfeecac6a998770dc823c45c70775", null ],
+    [ "jgraphics_image_surface_writejpeg", "group__jsurface.html#gad29a077cf3347b6d6d73e2cd6f4cf144", null ],
+    [ "jgraphics_image_surface_writepng", "group__jsurface.html#ga9452f1ffe5e87c5be399a2f106d10b7c", null ],
+    [ "jgraphics_surface_destroy", "group__jsurface.html#ga0fb843ca88d59c3a1c933b18cca41524", null ],
+    [ "jgraphics_surface_reference", "group__jsurface.html#gaf0948809cb6cc018e9f23e404ea9d271", null ],
+    [ "jgraphics_write_image_surface_to_filedata", "group__jsurface.html#ga96f2b8270e4fba3f2438ff829dc0279b", null ]
+];
