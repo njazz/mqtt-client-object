@@ -6,3 +6,4 @@ mkdir win-mingw
 cd win-mingw
 cmake ../.. -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain.mingw.cmake
 make
+make install
