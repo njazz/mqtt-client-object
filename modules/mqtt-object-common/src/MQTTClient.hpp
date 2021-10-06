@@ -28,7 +28,7 @@ class MQTTClient : public mqtt::callback {
     virtual void message_arrived(mqtt::const_message_ptr /*msg*/) override final;
 
 public:
-    bool connect(const std::string& host, const unsigned int& port, const std::string& clientName); ///< host, port
+    bool connect(const std::string& host, const unsigned int& port, const std::string& clientName, const std::string& username = "", const std::string& password = ""); ///< host, port
     bool subscribe(const std::string&, const MQTTCallback&);
     bool publish(const std::string& k, const std::string& v);
 

@@ -97,10 +97,23 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         return;
     }
 
+    std::string userName;
+    std::string password;
+
+    if (argc >= 4)
+    {
+        if (argv[2].a_type == COMP_SYMBOL) {
+            userName = argv[2].a_w.COMP_W_SYMBOL->s_name;
+        }
+        if (argv[3].a_type == COMP_SYMBOL) {
+            password = argv[3].a_w.COMP_W_SYMBOL->s_name;
+        }
+    }
+
     // ---
     post("MQTT Client: connecting to ... %s", argv[0].a_w.COMP_W_SYMBOL->s_name);
 
-    if (!x->client->connect(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), 1883, std::string(argv[1].a_w.COMP_W_SYMBOL->s_name))) {
+    if (!x->client->connect(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), 1883, std::string(argv[1].a_w.COMP_W_SYMBOL->s_name), userName, password)) {
 
         t_atom a;
         a.a_type = COMP_LONG;
