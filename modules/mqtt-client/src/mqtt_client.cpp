@@ -81,6 +81,28 @@ struct t_mqtt_client {
 
 // ---
 
+static const char* ws = " \t\n\r\f\v";
+
+// trim from end of string (right)
+static inline std::string& rtrim(std::string& s, const char* t = ws)
+{
+    s.erase(s.find_last_not_of(t) + 1);
+    return s;
+}
+
+// trim from beginning of string (left)
+static inline std::string& ltrim(std::string& s, const char* t = ws)
+{
+    s.erase(0, s.find_first_not_of(t));
+    return s;
+}
+
+// trim from both ends of string (right then left)
+static inline std::string& trim(std::string& s, const char* t = ws)
+{
+    return ltrim(rtrim(s, t), t);
+}
+
 static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 2) {
@@ -127,26 +149,31 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
     // ---
     std::string key = std::string(argv[0].a_w.COMP_W_SYMBOL->s_name);
     auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), [=](const std::string& value) {
-        bool isNumber = true;
+        bool isNumber = false;
+
+        const std::string& _value = trim(const_cast<std::string&>(value));
+        std::size_t pos;
 
         float floatValue = 0;
         try{
-        floatValue = std::stof(value);
-        }catch(std::exception&){
-            isNumber = false;
-        }
-        long intValue = 0;
-        try{
-        intValue= std::stol(value);
+            floatValue = std::stof(_value, &pos);
+            isNumber = pos == _value.size();
         }catch(std::exception&){
             isNumber = false;
         }
 
-        // type check
-        bool isInteger = (floatValue - int(floatValue)) == 0;
+        long intValue = 0;
+        if (isNumber) {
+            try{
+                intValue = std::stol(_value, &pos);
+            }catch(std::exception&){
+                isNumber = false;
+            }
+        }
 
         if (isNumber) {
-            if (isInteger) {
+            // type check
+            if ((floatValue - int(floatValue)) == 0) {
                 t_atom a;
                 a.a_type = COMP_LONG;
                 a.a_w.COMP_W_LONG = intValue;
