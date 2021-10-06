@@ -33,6 +33,7 @@ public:
     bool publish(const std::string& k, const std::string& v);
 
     void unsubscribe(const std::string&);
+    void disconnect();
 
     void setOnConnected(const MQTTCallback& v) { onConnected = v; }
     void setOnConnectionLost(const MQTTCallback& v) { onConnectionLost = v; }

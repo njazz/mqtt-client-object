@@ -69,3 +69,12 @@ bool MQTTClient::publish(const std::string& k, const std::string& v)
 
     return true;
 }
+
+void MQTTClient::disconnect()
+{
+    if (!mqttClient)
+        return;
+
+    mqttClient->disconnect();
+    mqttClient.release();
+}

@@ -105,11 +105,23 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         t_atom a;
         a.a_type = COMP_LONG;
         a.a_w.COMP_W_LONG = 0; ////gensym(value.c_str());
-        outlet_list(x->out2, gensym("connected"), 1, &a);
+        outlet_anything(x->out2, gensym("connected"), 1, &a);
 
         error("MQTT Client: %s", x->client->getLastError().c_str());
         return;
     }
+}
+
+static void mqtt_client_disconnect(t_mqtt_client* x, t_symbol* s)
+{
+    post("MQTT Client: disconnecting");
+
+    x->client->disconnect();
+
+    t_atom a;
+    a.a_type = COMP_LONG;
+    a.a_w.COMP_W_LONG = 0;
+    outlet_anything(x->out2, gensym("connected"), 1, &a);
 }
 
 static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
@@ -279,6 +291,7 @@ void mqtt_client_setup(void)
     mqtt_client_class = comp_class_new("mqtt_client", (t_comp_newmethod)mqtt_client_new, (t_comp_method)mqtt_client_free, sizeof(t_mqtt_client));
 
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_connect, "connect");
+    comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_disconnect, "disconnect");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_subscribe, "subscribe");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_unsubscribe, "unsubscribe");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_publish, "publish");
