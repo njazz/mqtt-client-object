@@ -12,7 +12,7 @@ void MQTTClient::message_arrived(mqtt::const_message_ptr msg)
 
 // ---
 
-bool MQTTClient::connect(const std::string& host, const unsigned int& port, const std::string& clientName)
+bool MQTTClient::connect(const std::string& host, const unsigned int& port, const std::string& clientName, const std::string& userName, const std::string& password)
 {
     const std::string uri = "tcp://" + host + ":" + std::to_string(port);
 
@@ -25,6 +25,13 @@ bool MQTTClient::connect(const std::string& host, const unsigned int& port, cons
         connectOptions = mqtt::connect_options();
         connectOptions.set_keep_alive_interval(20);
         connectOptions.set_clean_session(true);
+
+        if (!userName.empty() && !password.empty())
+        {
+            connectOptions.set_user_name(userName);
+            connectOptions.set_password(password);
+        }
+
         mqttClient->connect(connectOptions);
 
     } catch (std::exception& e) {
