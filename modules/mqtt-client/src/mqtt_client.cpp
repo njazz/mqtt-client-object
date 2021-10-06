@@ -163,7 +163,7 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
             a[0].a_w.COMP_W_SYMBOL = gensym(key.c_str());
             a[1].a_type = COMP_SYMBOL;
             a[1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
-            outlet_anything(x->out1, gensym(key.c_str()), 2, &a[0]);
+            outlet_anything(x->out1, gensym("list"), 2, a);
         }
     });
 
