@@ -331,35 +331,40 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
         int size = (floats.empty() ? 1 : floats.size()) + topicStrings.size();
 
         // set topic list
-        t_atom a[size];
-        for (size_t i=0; i<topicStrings.size(); i++) {
-            a[i].a_type = COMP_SYMBOL;
-            a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
-        }
+        t_atom *a = new t_atom[size];
+        if (a)
+        {
+            for (size_t i=0; i<topicStrings.size(); i++) {
+                a[i].a_type = COMP_SYMBOL;
+                a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
+            }
 
-        if (isNumber) {
-            // type check
-            if ((floatValue - int(floatValue)) == 0) {
-                a[size-1].a_type = COMP_LONG;
-                a[size-1].a_w.COMP_W_LONG = intValue;
+            if (isNumber) {
+                // type check
+                if ((floatValue - int(floatValue)) == 0) {
+                    a[size-1].a_type = COMP_LONG;
+                    a[size-1].a_w.COMP_W_LONG = intValue;
+                    outlet_anything(x->out1, gensym("list"), size, a);
+                } else {
+                    a[size-1].a_type = A_FLOAT;
+                    a[size-1].a_w.w_float = floatValue;
+                    outlet_anything(x->out1, gensym("list"), size, a);
+                }
+            } else if (!floats.empty()) {
+                // output list
+                for (size_t i=0; i<floats.size(); i++) {
+                    a[topicStrings.size() + i].a_type = A_FLOAT;
+                    a[topicStrings.size() + i].a_w.w_float = floats[i];
+                }
                 outlet_anything(x->out1, gensym("list"), size, a);
             } else {
-                a[size-1].a_type = A_FLOAT;
-                a[size-1].a_w.w_float = floatValue;
+                // just output that string
+                a[size-1].a_type = COMP_SYMBOL;
+                a[size-1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
                 outlet_anything(x->out1, gensym("list"), size, a);
             }
-        } else if (!floats.empty()) {
-            // output list
-            for (size_t i=0; i<floats.size(); i++) {
-                a[topicStrings.size() + i].a_type = A_FLOAT;
-                a[topicStrings.size() + i].a_w.w_float = floats[i];
-            }
-            outlet_anything(x->out1, gensym("list"), size, a);
-        } else {
-            // just output that string
-            a[size-1].a_type = COMP_SYMBOL;
-            a[size-1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
-            outlet_anything(x->out1, gensym("list"), size, a);
+
+            delete[] a;
         }
     });
 
