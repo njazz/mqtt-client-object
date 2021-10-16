@@ -1,2 +1,4 @@
 bin/*
-builds
+
+builds/*
+CMakeLists.txt.user
