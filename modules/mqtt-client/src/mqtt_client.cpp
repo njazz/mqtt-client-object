@@ -108,11 +108,9 @@ static std::vector<std::string> split(const std::string& value, const std::strin
     std::vector<std::string> list;
     auto start = 0U;
     auto end = value.find(pattern);
-    while (end != std::string::npos)
-    {
+    while (end != std::string::npos) {
         std::string s = value.substr(start, end - start);
-        if (!s.empty())
-        {
+        if (!s.empty()) {
             list.push_back(s);
         }
         start = end + 1;
@@ -120,8 +118,7 @@ static std::vector<std::string> split(const std::string& value, const std::strin
     }
     // add last
     std::string s = value.substr(start, end - start);
-    if (!s.empty())
-    {
+    if (!s.empty()) {
         list.push_back(s);
     }
 
@@ -147,8 +144,7 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
     std::string userName;
     std::string password;
 
-    if (argc >= 4)
-    {
+    if (argc >= 4) {
         if (argv[2].a_type == COMP_SYMBOL) {
             userName = argv[2].a_w.COMP_W_SYMBOL->s_name;
         }
@@ -253,7 +249,7 @@ static void mqtt_client_publish(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
     auto v = (argv[1].a_type == COMP_SYMBOL) ? std::string(argv[1].a_w.COMP_W_SYMBOL->s_name)
         : (argv[1].a_type == A_FLOAT)
         ? std::to_string((argv[1].a_w.w_float))
-                                                   : std::to_string(int(argv[1].a_w.COMP_W_LONG));
+        : std::to_string(int(argv[1].a_w.COMP_W_LONG));
     x->publishedValues[k] = v;
 
     auto publishResult = x->client->publish(k, x->publishedValues[k]);
@@ -276,11 +272,11 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
     x->out1 = comp_outlet_new((t_object*)x, "list");
     x->out2 = comp_outlet_new((t_object*)x, "list");
 
-    // Max outlet order fix
-    #ifdef BUILD_MAX_OBJECT
+// Max outlet order fix
+#ifdef BUILD_MAX_OBJECT
     x->out1 = (t_comp_outlet*)outlet_nth((t_object*)x, 0);
     x->out2 = (t_comp_outlet*)outlet_nth((t_object*)x, 1);
-    #endif
+#endif
 
     x->client.reset(new MQTTClient());
 
@@ -296,9 +292,8 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
     });
 
     x->client->setOnMessage([=](const std::string& topic, const std::string& value) {
-
         // value
-        bool isNumber = false;        
+        bool isNumber = false;
 
         const std::string& _value = trim(const_cast<std::string&>(value));
         std::size_t pos;
@@ -307,18 +302,18 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
         std::vector<float> floats;
 
         float floatValue = 0;
-        try{
+        try {
             floatValue = std::stof(_value, &pos);
             isNumber = pos == _value.size();
             floatParseOk = true;
-        }catch(std::exception&){
+        } catch (std::exception&) {
             isNumber = false;
         }
         long intValue = 0;
         if (isNumber) {
-            try{
+            try {
                 intValue = std::stol(_value, &pos);
-            }catch(std::exception&){
+            } catch (std::exception&) {
                 isNumber = false;
             }
         } else if (floatParseOk) {
@@ -326,25 +321,22 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
             // check if this is a list of numbers
             std::vector<std::string> parts = split(_value, " ");
 
-            for (std::string& string : parts)
-            {
+            for (std::string& string : parts) {
                 try {
                     // parse float
                     float f = std::stof(string, &pos);
                     if (pos == string.size()) {
                         floats.push_back(f);
                     }
-                } catch(std::exception&) {
+                } catch (std::exception&) {
                     break;
                 }
             }
 
-            if (floats.size() != parts.size())
-            {
+            if (floats.size() != parts.size()) {
                 floats.clear();
             }
         }
-
 
         // prefix output with mqtt path as list
         // this allows us to deal with wildcards
@@ -356,10 +348,9 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
         int size = (floats.empty() ? 1 : floats.size()) + topicStrings.size();
 
         // set topic list
-        t_atom * a = new t_atom[size];
-        if (a)
-        {
-            for (size_t i=0; i<topicStrings.size(); i++) {
+        t_atom* a = new t_atom[size];
+        if (a) {
+            for (size_t i = 0; i < topicStrings.size(); i++) {
                 a[i].a_type = COMP_SYMBOL;
                 a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
             }
@@ -367,25 +358,25 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
             if (isNumber) {
                 // type check
                 if ((floatValue - int(floatValue)) == 0) {
-                    a[size-1].a_type = COMP_LONG;
-                    a[size-1].a_w.COMP_W_LONG = intValue;
+                    a[size - 1].a_type = COMP_LONG;
+                    a[size - 1].a_w.COMP_W_LONG = intValue;
                     outlet_anything(x->out1, gensym("list"), size, a);
                 } else {
-                    a[size-1].a_type = A_FLOAT;
-                    a[size-1].a_w.w_float = floatValue;
+                    a[size - 1].a_type = A_FLOAT;
+                    a[size - 1].a_w.w_float = floatValue;
                     outlet_anything(x->out1, gensym("list"), size, a);
                 }
             } else if (!floats.empty()) {
                 // output list
-                for (size_t i=0; i<floats.size(); i++) {
+                for (size_t i = 0; i < floats.size(); i++) {
                     a[topicStrings.size() + i].a_type = A_FLOAT;
                     a[topicStrings.size() + i].a_w.w_float = floats[i];
                 }
                 outlet_anything(x->out1, gensym("list"), size, a);
             } else {
                 // just output that string
-                a[size-1].a_type = COMP_SYMBOL;
-                a[size-1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
+                a[size - 1].a_type = COMP_SYMBOL;
+                a[size - 1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
                 outlet_anything(x->out1, gensym("list"), size, a);
             }
 

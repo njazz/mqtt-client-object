@@ -22,8 +22,7 @@ bool MQTTClient::connect(const std::string& host, const unsigned int& port, cons
         connectOptions.set_keep_alive_interval(20);
         connectOptions.set_clean_session(true);
 
-        if (!userName.empty() && !password.empty())
-        {
+        if (!userName.empty() && !password.empty()) {
             connectOptions.set_user_name(userName);
             connectOptions.set_password(password);
         }
