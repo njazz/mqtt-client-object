@@ -7,4 +7,9 @@ GPL3 license
 ---
 run build scripts from repository root to compile (currently tested on macOS)<br>
 <br>
-version 0.0.1
+version 0.0.2
+
+Acknowledgements
+================
+
+* http://github.com/i-n-g-o
