@@ -81,6 +81,53 @@ struct t_mqtt_client {
 
 // ---
 
+static const char* ws = " \t\n\r\f\v";
+
+// trim from end of string (right)
+static inline std::string& rtrim(std::string& s, const char* t = ws)
+{
+    s.erase(s.find_last_not_of(t) + 1);
+    return s;
+}
+
+// trim from beginning of string (left)
+static inline std::string& ltrim(std::string& s, const char* t = ws)
+{
+    s.erase(0, s.find_first_not_of(t));
+    return s;
+}
+
+// trim from both ends of string (right then left)
+static inline std::string& trim(std::string& s, const char* t = ws)
+{
+    return ltrim(rtrim(s, t), t);
+}
+
+static std::vector<std::string> split(const std::string& value, const std::string& pattern)
+{
+    std::vector<std::string> list;
+    auto start = 0U;
+    auto end = value.find(pattern);
+    while (end != std::string::npos)
+    {
+        std::string s = value.substr(start, end - start);
+        if (!s.empty())
+        {
+            list.push_back(s);
+        }
+        start = end + 1;
+        end = value.find(pattern, start);
+    }
+    // add last
+    std::string s = value.substr(start, end - start);
+    if (!s.empty())
+    {
+        list.push_back(s);
+    }
+
+    return list;
+}
+
 static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 2) {
@@ -97,19 +144,44 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         return;
     }
 
+    std::string userName;
+    std::string password;
+
+    if (argc >= 4)
+    {
+        if (argv[2].a_type == COMP_SYMBOL) {
+            userName = argv[2].a_w.COMP_W_SYMBOL->s_name;
+        }
+        if (argv[3].a_type == COMP_SYMBOL) {
+            password = argv[3].a_w.COMP_W_SYMBOL->s_name;
+        }
+    }
+
     // ---
     post("MQTT Client: connecting to ... %s", argv[0].a_w.COMP_W_SYMBOL->s_name);
 
-    if (!x->client->connect(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), 1883, std::string(argv[1].a_w.COMP_W_SYMBOL->s_name))) {
+    if (!x->client->connect(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), 1883, std::string(argv[1].a_w.COMP_W_SYMBOL->s_name), userName, password)) {
 
         t_atom a;
         a.a_type = COMP_LONG;
         a.a_w.COMP_W_LONG = 0; ////gensym(value.c_str());
-        outlet_list(x->out2, gensym("connected"), 1, &a);
+        outlet_anything(x->out2, gensym("connected"), 1, &a);
 
         error("MQTT Client: %s", x->client->getLastError().c_str());
         return;
     }
+}
+
+static void mqtt_client_disconnect(t_mqtt_client* x, t_symbol* s)
+{
+    post("MQTT Client: disconnecting");
+
+    x->client->disconnect();
+
+    t_atom a;
+    a.a_type = COMP_LONG;
+    a.a_w.COMP_W_LONG = 0;
+    outlet_anything(x->out2, gensym("connected"), 1, &a);
 }
 
 static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
@@ -126,46 +198,7 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
 
     // ---
     std::string key = std::string(argv[0].a_w.COMP_W_SYMBOL->s_name);
-    auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), [=](const std::string& value) {
-        bool isNumber = true;
-
-        float floatValue = 0;
-        try{
-        floatValue = std::stof(value);
-        }catch(std::exception&){
-            isNumber = false;
-        }
-        long intValue = 0;
-        try{
-        intValue= std::stol(value);
-        }catch(std::exception&){
-            isNumber = false;
-        }
-
-        // type check
-        bool isInteger = (floatValue - int(floatValue)) == 0;
-
-        if (isNumber) {
-            if (isInteger) {
-                t_atom a;
-                a.a_type = COMP_LONG;
-                a.a_w.COMP_W_LONG = intValue;
-                outlet_anything(x->out1, gensym(key.c_str()), 1, &a);
-            } else {
-                t_atom a;
-                a.a_type = A_FLOAT;
-                a.a_w.w_float = floatValue;
-                outlet_anything(x->out1, gensym(key.c_str()), 1, &a);
-            }
-        } else {
-            t_atom a[2];
-            a[0].a_type = COMP_SYMBOL;
-            a[0].a_w.COMP_W_SYMBOL = gensym(key.c_str());
-            a[1].a_type = COMP_SYMBOL;
-            a[1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
-            outlet_anything(x->out1, gensym(key.c_str()), 2, &a[0]);
-        }
-    });
+    auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name));
 
     if (subscribeResult)
         post("MQTT Client: subscribed to '%s'", argv[0].a_w.COMP_W_SYMBOL->s_name);
@@ -251,15 +284,113 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 
     x->client.reset(new MQTTClient());
 
-    x->client->setOnConnected([=](const std::string& value) {
+    x->client->setOnConnected([=](const std::string& /*value*/) {
         t_atom a;
         a.a_type = COMP_LONG;
         a.a_w.COMP_W_LONG = 1;
         outlet_anything(x->out2, gensym("connected"), 1, &a);
     });
 
-    x->client->setOnConnectionLost([=](const std::string& value) {
+    x->client->setOnConnectionLost([=](const std::string& /*value*/) {
         outlet_anything(x->out2, gensym("connection_lost"), 0, 0);
+    });
+
+    x->client->setOnMessage([=](const std::string& topic, const std::string& value) {
+
+        // value
+        bool isNumber = false;        
+
+        const std::string& _value = trim(const_cast<std::string&>(value));
+        std::size_t pos;
+        bool floatParseOk = false;
+
+        std::vector<float> floats;
+
+        float floatValue = 0;
+        try{
+            floatValue = std::stof(_value, &pos);
+            isNumber = pos == _value.size();
+            floatParseOk = true;
+        }catch(std::exception&){
+            isNumber = false;
+        }
+        long intValue = 0;
+        if (isNumber) {
+            try{
+                intValue = std::stol(_value, &pos);
+            }catch(std::exception&){
+                isNumber = false;
+            }
+        } else if (floatParseOk) {
+            // string seems to start with a number
+            // check if this is a list of numbers
+            std::vector<std::string> parts = split(_value, " ");
+
+            for (std::string& string : parts)
+            {
+                try {
+                    // parse float
+                    float f = std::stof(string, &pos);
+                    if (pos == string.size()) {
+                        floats.push_back(f);
+                    }
+                } catch(std::exception&) {
+                    break;
+                }
+            }
+
+            if (floats.size() != parts.size())
+            {
+                floats.clear();
+            }
+        }
+
+
+        // prefix output with mqtt path as list
+        // this allows us to deal with wildcards
+
+        // split topic into list
+        std::vector<std::string> topicStrings = split(topic, "/");
+
+        // atom list size
+        int size = (floats.empty() ? 1 : floats.size()) + topicStrings.size();
+
+        // set topic list
+        t_atom * a = new t_atom[size];
+        if (a)
+        {
+            for (size_t i=0; i<topicStrings.size(); i++) {
+                a[i].a_type = COMP_SYMBOL;
+                a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
+            }
+
+            if (isNumber) {
+                // type check
+                if ((floatValue - int(floatValue)) == 0) {
+                    a[size-1].a_type = COMP_LONG;
+                    a[size-1].a_w.COMP_W_LONG = intValue;
+                    outlet_anything(x->out1, gensym("list"), size, a);
+                } else {
+                    a[size-1].a_type = A_FLOAT;
+                    a[size-1].a_w.w_float = floatValue;
+                    outlet_anything(x->out1, gensym("list"), size, a);
+                }
+            } else if (!floats.empty()) {
+                // output list
+                for (size_t i=0; i<floats.size(); i++) {
+                    a[topicStrings.size() + i].a_type = A_FLOAT;
+                    a[topicStrings.size() + i].a_w.w_float = floats[i];
+                }
+                outlet_anything(x->out1, gensym("list"), size, a);
+            } else {
+                // just output that string
+                a[size-1].a_type = COMP_SYMBOL;
+                a[size-1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
+                outlet_anything(x->out1, gensym("list"), size, a);
+            }
+
+            delete[] a;
+        }
     });
 
     return x;
@@ -279,6 +410,7 @@ void mqtt_client_setup(void)
     mqtt_client_class = comp_class_new("mqtt_client", (t_comp_newmethod)mqtt_client_new, (t_comp_method)mqtt_client_free, sizeof(t_mqtt_client));
 
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_connect, "connect");
+    comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_disconnect, "disconnect");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_subscribe, "subscribe");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_unsubscribe, "unsubscribe");
     comp_class_add_method(mqtt_client_class, (t_comp_method)&mqtt_client_publish, "publish");

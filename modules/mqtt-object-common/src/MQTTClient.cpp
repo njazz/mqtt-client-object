@@ -3,16 +3,12 @@
 // ---
 void MQTTClient::message_arrived(mqtt::const_message_ptr msg)
 {
-    auto k = msg->get_topic();
-    if (callbacks.find(k) == callbacks.end())
-        return;
-
-    callbacks[k](msg->get_payload_str());
+    onMessage(msg->get_topic(), msg->get_payload_str());
 }
 
 // ---
 
-bool MQTTClient::connect(const std::string& host, const unsigned int& port, const std::string& clientName)
+bool MQTTClient::connect(const std::string& host, const unsigned int& port, const std::string& clientName, const std::string& userName, const std::string& password)
 {
     const std::string uri = "tcp://" + host + ":" + std::to_string(port);
 
@@ -25,6 +21,13 @@ bool MQTTClient::connect(const std::string& host, const unsigned int& port, cons
         connectOptions = mqtt::connect_options();
         connectOptions.set_keep_alive_interval(20);
         connectOptions.set_clean_session(true);
+
+        if (!userName.empty() && !password.empty())
+        {
+            connectOptions.set_user_name(userName);
+            connectOptions.set_password(password);
+        }
+
         mqttClient->connect(connectOptions);
 
     } catch (std::exception& e) {
@@ -34,12 +37,12 @@ bool MQTTClient::connect(const std::string& host, const unsigned int& port, cons
 
     return true;
 }
-bool MQTTClient::subscribe(const std::string& topic, const MQTTCallback& cb)
+
+bool MQTTClient::subscribe(const std::string& topic)
 {
     if (!mqttClient)
         return false;
 
-    callbacks[topic] = cb;
     try {
         mqttClient->subscribe(topic, 1);
     } catch (std::exception& e) {
@@ -52,7 +55,15 @@ bool MQTTClient::subscribe(const std::string& topic, const MQTTCallback& cb)
 
 void MQTTClient::unsubscribe(const std::string& topic)
 {
-    callbacks.erase(topic);
+    if (!mqttClient)
+        return;
+
+    try {
+        mqttClient->unsubscribe(topic);
+    } catch (std::exception& e) {
+        lastError = e.what();
+        return;
+    }
 }
 
 bool MQTTClient::publish(const std::string& k, const std::string& v)
@@ -68,4 +79,13 @@ bool MQTTClient::publish(const std::string& k, const std::string& v)
     }
 
     return true;
+}
+
+void MQTTClient::disconnect()
+{
+    if (!mqttClient)
+        return;
+
+    mqttClient->disconnect();
+    mqttClient.release();
 }

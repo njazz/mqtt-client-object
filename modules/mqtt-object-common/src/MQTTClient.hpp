@@ -8,11 +8,11 @@
 
 //
 using MQTTCallback = std::function<void(const std::string&)>;
+using MQTTMsgCallback = std::function<void(const std::string&, const std::string&)>;
 
 //
 class MQTTClient : public mqtt::callback {
     std::unique_ptr<mqtt::async_client> mqttClient;
-    std::unordered_map<std::string, MQTTCallback> callbacks;
     mqtt::create_options options = mqtt::create_options();
     mqtt::connect_options connectOptions = mqtt::connect_options();
 
@@ -20,6 +20,7 @@ class MQTTClient : public mqtt::callback {
 
     MQTTCallback onConnected = [](const std::string&) {};
     MQTTCallback onConnectionLost = [](const std::string&) {};
+    MQTTMsgCallback onMessage = [](const std::string&, const std::string&) {};
 
     // mqtt::callback
     virtual void connected(const mqtt::string& v) override final { onConnected(v); }
@@ -28,14 +29,16 @@ class MQTTClient : public mqtt::callback {
     virtual void message_arrived(mqtt::const_message_ptr /*msg*/) override final;
 
 public:
-    bool connect(const std::string& host, const unsigned int& port, const std::string& clientName); ///< host, port
-    bool subscribe(const std::string&, const MQTTCallback&);
+    bool connect(const std::string& host, const unsigned int& port, const std::string& clientName, const std::string& username = "", const std::string& password = ""); ///< host, port
+    bool subscribe(const std::string&);
     bool publish(const std::string& k, const std::string& v);
 
     void unsubscribe(const std::string&);
+    void disconnect();
 
     void setOnConnected(const MQTTCallback& v) { onConnected = v; }
     void setOnConnectionLost(const MQTTCallback& v) { onConnectionLost = v; }
+    void setOnMessage(const MQTTMsgCallback& v) { onMessage = v; }
 
     std::string getLastError() { return lastError; }
 };
