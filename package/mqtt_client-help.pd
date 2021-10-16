@@ -1,4 +1,4 @@
-#N canvas 128 88 688 564 12;
+#N canvas 128 88 764 696 12;
 #X obj 1 1 cnv 15 240 30 empty empty mqtt_client 20 12 0 18 -233017
 -66577 0;
 #X obj 52 277 mqtt_client;
@@ -16,8 +16,6 @@
 #X obj 374 374 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
 #X msg 474 202 publish topic-1 abc;
-#X text 24 533 Written by Alex Nadzharov \, 2021 Version 0.0.1 GPL3
-;
 #X text 19 40 client for MQTT protocol based on Eclipse PAHO C++ library
 ;
 #X msg 54 135 disconnect;
@@ -30,7 +28,9 @@
 #X msg 92 175 subscribe topic-1;
 #X obj 52 483 print topic-1;
 #X msg 36 112 connect localhost test-client username password;
-#X connect 1 0 20 0;
+#X text 26 538 https://github.com/njazz/mqtt-client-object Version
+0.0.2 GPL3;
+#X connect 1 0 19 0;
 #X connect 1 1 2 0;
 #X connect 1 1 7 0;
 #X connect 3 0 1 0;
@@ -42,12 +42,12 @@
 #X connect 7 2 11 0;
 #X connect 8 0 1 0;
 #X connect 12 0 1 0;
-#X connect 15 0 1 0;
-#X connect 16 0 5 0;
-#X connect 17 0 1 0;
-#X connect 18 0 23 0;
-#X connect 18 1 19 0;
-#X connect 20 0 18 0;
+#X connect 14 0 1 0;
+#X connect 15 0 5 0;
+#X connect 16 0 1 0;
+#X connect 17 0 22 0;
+#X connect 17 1 18 0;
+#X connect 19 0 17 0;
+#X connect 20 0 1 0;
 #X connect 21 0 1 0;
-#X connect 22 0 1 0;
-#X connect 24 0 1 0;
+#X connect 23 0 1 0;
