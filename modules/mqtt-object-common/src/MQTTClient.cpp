@@ -8,6 +8,11 @@ void MQTTClient::message_arrived(mqtt::const_message_ptr msg)
 
 // ---
 
+MQTTClient::~MQTTClient()
+{
+    disconnect();
+}
+
 bool MQTTClient::connect(const std::string& host, const unsigned int& port, const std::string& clientName, const std::string& userName, const std::string& password)
 {
     const std::string uri = "tcp://" + host + ":" + std::to_string(port);
