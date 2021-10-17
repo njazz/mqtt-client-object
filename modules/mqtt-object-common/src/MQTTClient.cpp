@@ -90,6 +90,11 @@ void MQTTClient::disconnect()
     if (!mqttClient)
         return;
 
-    mqttClient->disconnect();
-    mqttClient.release();
+    try {
+        mqttClient->disconnect();
+    }catch (std::exception& e) {
+        lastError = e.what();
+    }
+
+    mqttClient.reset();
 }
