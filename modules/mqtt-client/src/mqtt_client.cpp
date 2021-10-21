@@ -75,8 +75,6 @@ struct t_mqtt_client {
 
     t_comp_outlet* out1 = nullptr;
     t_comp_outlet* out2 = nullptr;
-
-    std::unordered_map<std::string, std::string> publishedValues;
 };
 
 // ---
@@ -250,9 +248,8 @@ static void mqtt_client_publish(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         : (argv[1].a_type == A_FLOAT)
         ? std::to_string((argv[1].a_w.w_float))
         : std::to_string(int(argv[1].a_w.COMP_W_LONG));
-    x->publishedValues[k] = v;
 
-    auto publishResult = x->client->publish(k, x->publishedValues[k]);
+    auto publishResult = x->client->publish(k, v);
     if (!publishResult) {
         error("MQTT Client: %s", x->client->getLastError().c_str());
     }
