@@ -388,6 +388,7 @@ static void mqtt_client_free(t_mqtt_client* x)
 {
     comp_outlet_delete(x->out1);
     comp_outlet_delete(x->out2);
+    x->client.reset();
 }
 
 extern "C" {
