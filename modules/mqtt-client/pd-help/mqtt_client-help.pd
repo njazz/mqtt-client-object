@@ -1,43 +1,54 @@
-#N canvas 80 118 587 620 12;
+#N canvas 128 88 764 696 12;
 #X obj 1 1 cnv 15 240 30 empty empty mqtt_client 20 12 0 18 -233017
 -66577 0;
 #X obj 52 277 mqtt_client;
-#X obj 83 329 print;
-#X obj 55 387 route topic-1;
-#X msg 167 174 subscribe topic-1;
-#X msg 318 173 unsubscribe topic-1;
-#X msg 43 130 publish topic-1 v1;
-#X floatatom 22 431 5 0 0 0 - - -;
-#X msg 295 133 publish topic-1 \$1;
-#X floatatom 295 90 5 0 0 0 - - -;
-#X obj 183 389 route connected publish_result subscribe;
+#X obj 244 316 print;
+#X msg 445 172 unsubscribe topic-1;
+#X msg 512 228 publish topic-1 v1;
+#X msg 422 132 publish topic-1 \$1;
+#X floatatom 422 87 5 0 0 0 - - -;
+#X obj 190 347 route connected publish_result subscribe;
 #X msg 22 90 connect localhost test-client;
-#X msg 76 432 set \$1;
-#X msg 76 468 abc;
-#X obj 183 434 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 190 374 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 273 434 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 282 374 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X obj 366 432 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+#X obj 374 374 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
 1;
-#X msg 292 220 publish topic-1 abc;
-#X text 24 533 Written by Alex Nadzharov \, 2021 Version 0.0.1 GPL3
-;
+#X msg 474 202 publish topic-1 abc;
 #X text 19 40 client for MQTT protocol based on Eclipse PAHO C++ library
 ;
-#X connect 1 0 3 0;
+#X msg 54 135 disconnect;
+#X msg 477 92 1;
+#X msg 122 224 subscribe group1/#;
+#X obj 52 424 route topic-1 group1;
+#X obj 120 455 print group1;
+#X obj 52 305 list trim;
+#X msg 103 200 subscribe topic-1/#;
+#X msg 92 175 subscribe topic-1;
+#X obj 52 483 print topic-1;
+#X msg 36 112 connect localhost test-client username password;
+#X text 26 538 https://github.com/njazz/mqtt-client-object;
+#X text 26 561 Version 0.0.2;
+#X text 26 584 GPL3;
+#X connect 1 0 19 0;
 #X connect 1 1 2 0;
-#X connect 1 1 10 0;
-#X connect 3 0 7 0;
-#X connect 3 0 12 0;
+#X connect 1 1 7 0;
+#X connect 3 0 1 0;
 #X connect 4 0 1 0;
 #X connect 5 0 1 0;
-#X connect 6 0 1 0;
+#X connect 6 0 5 0;
+#X connect 7 0 9 0;
+#X connect 7 1 10 0;
+#X connect 7 2 11 0;
 #X connect 8 0 1 0;
-#X connect 9 0 8 0;
-#X connect 10 0 14 0;
-#X connect 10 1 15 0;
-#X connect 10 2 16 0;
-#X connect 11 0 1 0;
-#X connect 12 0 13 0;
-#X connect 17 0 1 0;
+#X connect 12 0 1 0;
+#X connect 14 0 1 0;
+#X connect 15 0 5 0;
+#X connect 16 0 1 0;
+#X connect 17 0 22 0;
+#X connect 17 1 18 0;
+#X connect 19 0 17 0;
+#X connect 20 0 1 0;
+#X connect 21 0 1 0;
+#X connect 23 0 1 0;
