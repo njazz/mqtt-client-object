@@ -4,6 +4,6 @@ mkdir builds
 cd builds
 mkdir osx
 cd osx
-cmake ../..
+cmake --build ../.. --target all
 make
-make install
+
