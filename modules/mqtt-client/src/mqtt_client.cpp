@@ -1,7 +1,7 @@
 #include "MQTTClient.hpp"
 
-#include <vector>
 #include <string>
+#include <vector>
 
 // ---
 // compatibility with Pd and Max; tests
@@ -134,7 +134,6 @@ struct t_mqtt_client {
     t_comp_outlet* out2 = nullptr;
 };
 
-
 ///> @b connect
 
 static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
@@ -209,52 +208,7 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
     // ---
     std::string key = std::string(argv[0].a_w.COMP_W_SYMBOL->s_name);
 
-    auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name), [=](const std::string& value) {
-        bool isNumber = false;
-
-        const std::string& _value = trim(const_cast<std::string&>(value));
-        std::size_t pos;
-
-        float floatValue = 0;
-        try{
-            floatValue = std::stof(_value, &pos);
-            isNumber = pos == _value.size();
-        }catch(std::exception&){
-            isNumber = false;
-        }
-
-        long intValue = 0;
-        if (isNumber) {
-            try{
-                intValue = std::stol(_value, &pos);
-            }catch(std::exception&){
-                isNumber = false;
-            }
-        }
-
-        if (isNumber) {
-            // type check
-            if ((floatValue - int(floatValue)) == 0) {
-                t_atom a;
-                a.a_type = COMP_LONG;
-                a.a_w.COMP_W_LONG = intValue;
-                outlet_anything(x->out1, gensym(key.c_str()), 1, &a);
-            } else {
-                t_atom a;
-                a.a_type = A_FLOAT;
-                a.a_w.w_float = floatValue;
-                outlet_anything(x->out1, gensym(key.c_str()), 1, &a);
-            }
-        } else {
-            t_atom a[2];
-            a[0].a_type = COMP_SYMBOL;
-            a[0].a_w.COMP_W_SYMBOL = gensym(key.c_str());
-            a[1].a_type = COMP_SYMBOL;
-            a[1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
-            outlet_anything(x->out1, gensym("list"), 2, a);
-        }
-    });
-
+    auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name));
 
     if (subscribeResult)
         post("MQTT Client: subscribed to '%s'", argv[0].a_w.COMP_W_SYMBOL->s_name);
@@ -410,10 +364,9 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
         int size = (floats.empty() ? 1 : floats.size()) + topicStrings.size();
 
         // set topic list
-        t_atom *a = new t_atom[size];
-        if (a)
-        {
-            for (size_t i=0; i<topicStrings.size(); i++) {
+        t_atom* a = new t_atom[size];
+        if (a) {
+            for (size_t i = 0; i < topicStrings.size(); i++) {
 
                 a[i].a_type = COMP_SYMBOL;
                 a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
@@ -423,12 +376,12 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
                 // type check
                 if ((floatValue - int(floatValue)) == 0) {
 
-                    a[size-1].a_type = COMP_LONG;
-                    a[size-1].a_w.COMP_W_LONG = intValue;
+                    a[size - 1].a_type = COMP_LONG;
+                    a[size - 1].a_w.COMP_W_LONG = intValue;
                     outlet_anything(x->out1, gensym("list"), size, a);
                 } else {
-                    a[size-1].a_type = A_FLOAT;
-                    a[size-1].a_w.w_float = floatValue;
+                    a[size - 1].a_type = A_FLOAT;
+                    a[size - 1].a_w.w_float = floatValue;
 
                     outlet_anything(x->out1, gensym("list"), size, a);
                 }
@@ -488,5 +441,4 @@ void ext_main(void* r)
 {
     mqtt_client_setup();
 }
-
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.9.2, 2021-10-25T09:14:49. -->
+<!-- Written by QtCreator 4.9.2, 2021-11-01T12:03:08. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -62,9 +62,9 @@
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">Clang64 Qt 5.6</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Clang64 Qt 5.6</value>
    <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">{ece639c6-11c5-41ee-8f5a-5b1a2d549932}</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">0</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveBuildConfiguration">1</value>
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
-   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">2</value>
+   <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">1</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
     <valuelist type="QVariantList" key="CMake.Configuration"/>
     <value type="QString" key="ProjectExplorer.BuildConfiguration.BuildDirectory">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Default</value>
@@ -362,7 +362,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Default/modules/mqtt-object-common/mqtt-c/src</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Debug/modules/mqtt-object-common/mqtt-c/src</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.1">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -428,7 +428,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Default/modules/mqtt-object-common/mqtt-c/src</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Debug/modules/mqtt-object-common/mqtt-c/src</value>
    </valuemap>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.RunConfiguration.2">
     <value type="QString" key="Analyzer.Perf.CallgraphMode">dwarf</value>
@@ -494,7 +494,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Default/tests</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/Users/njazz/Documents/github/build-mqtt-client-object-Clang64_Qt_5_6-Debug/tests</value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">3</value>
   </valuemap>
