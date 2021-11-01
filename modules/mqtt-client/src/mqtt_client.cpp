@@ -1,6 +1,10 @@
 #include "MQTTClient.hpp"
 
+#include <string>
+#include <vector>
+
 // ---
+// compatibility with Pd and Max; tests
 
 #ifdef BUILD_PD_OBJECT
 extern "C" {
@@ -64,45 +68,36 @@ inline t_class* comp_class_new(const char* name, t_comp_newmethod n, t_comp_meth
 
 #endif
 
-// -----
-
-t_class* mqtt_client_class = nullptr;
-
-struct t_mqtt_client {
-    t_object obj;
-
-    std::unique_ptr<MQTTClient> client; ///< must be on heap
-
-    t_comp_outlet* out1 = nullptr;
-    t_comp_outlet* out2 = nullptr;
-
-    std::unordered_map<std::string, std::string> publishedValues;
-};
+#ifdef BUILD_TESTS
+#include "test_object.hpp"
+#endif
 
 // ---
+// string functions
 
 static const char* ws = " \t\n\r\f\v";
 
-// trim from end of string (right)
+///> @b trim from end of string (right)
 static inline std::string& rtrim(std::string& s, const char* t = ws)
 {
     s.erase(s.find_last_not_of(t) + 1);
     return s;
 }
 
-// trim from beginning of string (left)
+///> @b trim from beginning of string (left)
 static inline std::string& ltrim(std::string& s, const char* t = ws)
 {
     s.erase(0, s.find_first_not_of(t));
     return s;
 }
 
-// trim from both ends of string (right then left)
+///> @b trim from both ends of string (right then left)
 static inline std::string& trim(std::string& s, const char* t = ws)
 {
     return ltrim(rtrim(s, t), t);
 }
 
+///> @b split string
 static std::vector<std::string> split(const std::string& value, const std::string& pattern)
 {
     std::vector<std::string> list;
@@ -125,6 +120,22 @@ static std::vector<std::string> split(const std::string& value, const std::strin
     return list;
 }
 
+// ---
+// the object
+
+t_class* mqtt_client_class = nullptr;
+
+struct t_mqtt_client {
+    t_object obj;
+
+    std::unique_ptr<MQTTClient> client; ///< must be on heap
+
+    t_comp_outlet* out1 = nullptr;
+    t_comp_outlet* out2 = nullptr;
+};
+
+///> @b connect
+
 static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 2) {
@@ -141,8 +152,8 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         return;
     }
 
-    std::string userName;
-    std::string password;
+    std::string userName {};
+    std::string password {};
 
     if (argc >= 4) {
         if (argv[2].a_type == COMP_SYMBOL) {
@@ -168,6 +179,7 @@ static void mqtt_client_connect(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
     }
 }
 
+///> @b disconnect
 static void mqtt_client_disconnect(t_mqtt_client* x, t_symbol* s)
 {
     post("MQTT Client: disconnecting");
@@ -180,6 +192,7 @@ static void mqtt_client_disconnect(t_mqtt_client* x, t_symbol* s)
     outlet_anything(x->out2, gensym("connected"), 1, &a);
 }
 
+///> @b subscribe
 static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 1) {
@@ -194,6 +207,7 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
 
     // ---
     std::string key = std::string(argv[0].a_w.COMP_W_SYMBOL->s_name);
+
     auto subscribeResult = x->client->subscribe(std::string(argv[0].a_w.COMP_W_SYMBOL->s_name));
 
     if (subscribeResult)
@@ -207,6 +221,7 @@ static void mqtt_client_subscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC arg
     outlet_anything(x->out2, gensym("subscribe"), 1, &a);
 }
 
+///> @b unsubscribe
 static void mqtt_client_unsubscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 1) {
@@ -225,6 +240,7 @@ static void mqtt_client_unsubscribe(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC a
     x->client->unsubscribe(argv[0].a_w.COMP_W_SYMBOL->s_name);
 }
 
+///> @b publish
 static void mqtt_client_publish(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     if (argc < 2) {
@@ -250,9 +266,8 @@ static void mqtt_client_publish(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
         : (argv[1].a_type == A_FLOAT)
         ? std::to_string((argv[1].a_w.w_float))
         : std::to_string(int(argv[1].a_w.COMP_W_LONG));
-    x->publishedValues[k] = v;
 
-    auto publishResult = x->client->publish(k, x->publishedValues[k]);
+    auto publishResult = x->client->publish(k, v);
     if (!publishResult) {
         error("MQTT Client: %s", x->client->getLastError().c_str());
     }
@@ -265,6 +280,7 @@ static void mqtt_client_publish(t_mqtt_client* x, t_symbol* s, COMP_T_ARGC argc,
 
 // ---
 
+///> @b new instance
 static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
 {
     t_mqtt_client* x = (t_mqtt_client*)COMP_OBJECT_NEW(mqtt_client_class);
@@ -351,6 +367,7 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
         t_atom* a = new t_atom[size];
         if (a) {
             for (size_t i = 0; i < topicStrings.size(); i++) {
+
                 a[i].a_type = COMP_SYMBOL;
                 a[i].a_w.COMP_W_SYMBOL = gensym(topicStrings[i].c_str());
             }
@@ -358,25 +375,31 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
             if (isNumber) {
                 // type check
                 if ((floatValue - int(floatValue)) == 0) {
+
                     a[size - 1].a_type = COMP_LONG;
                     a[size - 1].a_w.COMP_W_LONG = intValue;
                     outlet_anything(x->out1, gensym("list"), size, a);
                 } else {
                     a[size - 1].a_type = A_FLOAT;
                     a[size - 1].a_w.w_float = floatValue;
+
                     outlet_anything(x->out1, gensym("list"), size, a);
                 }
             } else if (!floats.empty()) {
                 // output list
+
                 for (size_t i = 0; i < floats.size(); i++) {
+
                     a[topicStrings.size() + i].a_type = A_FLOAT;
                     a[topicStrings.size() + i].a_w.w_float = floats[i];
                 }
                 outlet_anything(x->out1, gensym("list"), size, a);
             } else {
                 // just output that string
+
                 a[size - 1].a_type = COMP_SYMBOL;
                 a[size - 1].a_w.COMP_W_SYMBOL = gensym(value.c_str());
+
                 outlet_anything(x->out1, gensym("list"), size, a);
             }
 
@@ -387,14 +410,17 @@ static void* mqtt_client_new(t_symbol* s, COMP_T_ARGC argc, t_atom* argv)
     return x;
 }
 
+///> @b free instance
 static void mqtt_client_free(t_mqtt_client* x)
 {
     comp_outlet_delete(x->out1);
     comp_outlet_delete(x->out2);
+    x->client.reset();
 }
 
 extern "C" {
 
+///> @b setup object
 void mqtt_client_setup(void)
 {
 
