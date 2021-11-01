@@ -2,14 +2,15 @@
 	"patcher" : 	{
 		"fileversion" : 1,
 		"appversion" : 		{
-			"major" : 7,
-			"minor" : 3,
-			"revision" : 4,
+			"major" : 8,
+			"minor" : 1,
+			"revision" : 11,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 718.0, 254.0, 640.0, 590.0 ],
+		"classnamespace" : "box",
+		"rect" : [ 946.0, 361.0, 640.0, 590.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -36,16 +37,65 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
+				"box" : 				{
+					"id" : "obj-17",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 425.5, 210.0, 109.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "unsubscribe topic1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-16",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 211.0, 354.0, 50.0, 22.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 71.0, 156.0, 66.0, 22.0 ],
+					"text" : "disconnect"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-4",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 36.0, 132.0, 267.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "connect localhost test-client username password"
+				}
+
+			}
+, 			{
 				"box" : 				{
 					"id" : "obj-12",
 					"linecount" : 3,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 30.0, 480.0, 195.0, 47.0 ],
-					"style" : "",
-					"text" : "Written by Alex Nadzharov, 2021\nVersion 0.0.1\nGPL3"
+					"patching_rect" : [ 30.0, 480.0, 247.0, 47.0 ],
+					"text" : "https://github.com/njazz/mqtt-client-object\nVersion 0.0.2\nGPL3"
 				}
 
 			}
@@ -57,7 +107,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 270.0, 13.5, 330.0, 33.0 ],
-					"style" : "",
 					"text" : "Client for MQTT protocol based on Eclipse PAHO C++ library"
 				}
 
@@ -71,7 +120,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 144.0, 354.0, 50.0, 62.0 ],
-					"style" : "",
 					"text" : "4595617205743255552."
 				}
 
@@ -84,8 +132,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 462.0, 392.0, 24.0, 24.0 ],
-					"style" : ""
+					"patching_rect" : [ 462.0, 392.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -97,8 +144,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 392.0, 392.0, 24.0, 24.0 ],
-					"style" : ""
+					"patching_rect" : [ 392.0, 392.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -110,8 +156,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "int" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 322.0, 392.0, 24.0, 24.0 ],
-					"style" : ""
+					"patching_rect" : [ 322.0, 392.0, 24.0, 24.0 ]
 				}
 
 			}
@@ -123,7 +168,6 @@
 					"numoutlets" : 4,
 					"outlettype" : [ "", "", "", "" ],
 					"patching_rect" : [ 322.0, 354.0, 229.0, 22.0 ],
-					"style" : "",
 					"text" : "route connected publish_result subscribe"
 				}
 
@@ -136,8 +180,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 79.0, 354.0, 50.0, 22.0 ],
-					"style" : ""
+					"patching_rect" : [ 79.0, 354.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -150,8 +193,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 21.0, 354.0, 50.0, 22.0 ],
-					"style" : ""
+					"patching_rect" : [ 21.0, 354.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -159,12 +201,11 @@
 				"box" : 				{
 					"id" : "obj-14",
 					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 2,
-					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 21.0, 307.0, 73.0, 22.0 ],
-					"style" : "",
-					"text" : "route topic1"
+					"numinlets" : 3,
+					"numoutlets" : 3,
+					"outlettype" : [ "", "", "" ],
+					"patching_rect" : [ 21.0, 307.0, 112.0, 22.0 ],
+					"text" : "route topic1 group1"
 				}
 
 			}
@@ -176,8 +217,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 454.0, 74.0, 50.0, 22.0 ],
-					"style" : ""
+					"patching_rect" : [ 454.0, 74.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -190,8 +230,7 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "bang" ],
 					"parameter_enable" : 0,
-					"patching_rect" : [ 390.0, 74.0, 50.0, 22.0 ],
-					"style" : ""
+					"patching_rect" : [ 390.0, 74.0, 50.0, 22.0 ]
 				}
 
 			}
@@ -202,8 +241,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 202.0, 177.0, 97.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 425.5, 175.0, 97.0, 22.0 ],
 					"text" : "subscribe topic1"
 				}
 
@@ -216,7 +254,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 390.0, 105.0, 101.0, 22.0 ],
-					"style" : "",
 					"text" : "publish topic1 $1"
 				}
 
@@ -228,8 +265,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 202.0, 105.0, 107.0, 22.0 ],
-					"style" : "",
+					"patching_rect" : [ 502.0, 105.0, 107.0, 22.0 ],
 					"text" : "publish topic1 abc"
 				}
 
@@ -242,7 +278,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 21.0, 105.0, 158.0, 22.0 ],
-					"style" : "",
 					"text" : "connect localhost test-client"
 				}
 
@@ -257,7 +292,6 @@
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
 					"patching_rect" : [ 65.5, 243.0, 69.0, 22.0 ],
-					"style" : "",
 					"text" : "mqtt_client"
 				}
 
@@ -271,7 +305,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 11.0, 13.5, 170.0, 33.0 ],
-					"style" : "",
 					"text" : "mqtt_client",
 					"textcolor" : [ 1.0, 1.0, 1.0, 1.0 ]
 				}
@@ -283,8 +316,7 @@
 					"maxclass" : "panel",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 0.0, 0.0, 240.0, 60.0 ],
-					"style" : ""
+					"patching_rect" : [ 0.0, 0.0, 240.0, 60.0 ]
 				}
 
 			}
@@ -306,6 +338,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-10", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-11", 0 ]
 				}
@@ -315,6 +354,14 @@
 				"patchline" : 				{
 					"destination" : [ "obj-8", 0 ],
 					"source" : [ "obj-13", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-16", 1 ],
+					"midpoints" : [ 77.0, 337.0, 251.5, 337.0 ],
+					"source" : [ "obj-14", 1 ]
 				}
 
 			}
@@ -346,6 +393,13 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-17", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-23", 0 ],
 					"source" : [ "obj-21", 0 ]
 				}
@@ -362,6 +416,13 @@
 				"patchline" : 				{
 					"destination" : [ "obj-27", 0 ],
 					"source" : [ "obj-21", 2 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-4", 0 ]
 				}
 
 			}
